@@ -1,8 +1,12 @@
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Queue;
 
 import javax.swing.JFrame;
 
+import networking.frontend.NetworkDataObject;
+import networking.frontend.NetworkListener;
+import networking.frontend.NetworkMessenger;
 import processing.awt.PSurfaceAWT;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -14,16 +18,19 @@ import processing.event.MouseEvent;
  * @author Calix
  * @version 5/6/19
  */
-public class Tester extends PApplet {
+public class Tester extends PApplet implements NetworkListener {
 
 	private ArrayList<Piece> pieces;
 	private Striker striker;
 	private PImage board;
 	private int score;
 	private int turnPhase;
-
+	private NetworkMessenger nm;
 	private static final float PIECE_RADIUS = 14.5f;
 	private static final float BORDER_WIDTH = 28;
+	
+	private static final String playerMove = "PLAYER_MOVE";
+	
 	public Tester(int blacks, int whites) {
 		score = 0;
 		turnPhase = 0;
@@ -254,5 +261,40 @@ public class Tester extends PApplet {
 		//make window visible
 		window.setVisible(true);
 		canvas.requestFocus();
+	}
+
+	
+	public void processNetworkMessages() {
+		if(nm == null) {
+			return;
+		}
+		
+		Queue<NetworkDataObject> queue = nm.getQueuedMessages();
+		
+		while(!queue.isEmpty()) {
+			NetworkDataObject ndo = queue.poll();
+			String host = ndo.getSourceIP();
+			
+			if(ndo.messageType.equals(NetworkDataObject.MESSAGE)) {
+				if(ndo.message[0].equals(playerMove)) {
+					
+				}
+				
+			}
+		}
+		
+		
+	}
+	
+	@Override
+	public void connectedToServer(NetworkMessenger nm) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void networkMessageReceived(NetworkDataObject ndo) {
+		// TODO Auto-generated method stub
+		
 	}
 }
