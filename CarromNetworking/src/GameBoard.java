@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -16,10 +17,14 @@ import processing.event.MouseEvent;
  */
 public class GameBoard extends PApplet {
 
-	private ArrayList<Piece> pieces;
+	private ArrayList<GenericGamePiece> pieces;
 	private Piece testPiece;
 	private Striker striker;
 	private PImage board;
+	private PImage black;
+	private PImage red;
+	private PImage white;
+	private PImage s;
 	private int score;
 	private int turnPhase;
 
@@ -28,7 +33,7 @@ public class GameBoard extends PApplet {
 	public GameBoard(int blacks, int whites) {
 		score = 0;
 		turnPhase = 0;
-		pieces = new ArrayList<Piece>();
+		pieces = new ArrayList<GenericGamePiece>();
 		GenericGamePiece queen = new GenericGamePiece(0, 0, PIECE_RADIUS, 50);
 		queen.setColor(255, 0, 0);
 		pieces.add(queen);
@@ -48,7 +53,6 @@ public class GameBoard extends PApplet {
 		
 		
 		striker = new Striker(0, 0, PIECE_RADIUS*4/3,255,255,255);
-
 	}
 
 	public void settings() {
@@ -82,7 +86,10 @@ public class GameBoard extends PApplet {
 		pieces.get(18).setLoc(x - PIECE_RADIUS * Math.sin(Math.PI/3) * 4, y + PIECE_RADIUS * Math.cos(Math.PI/3) * 4);	
 		
 		striker.setLoc(width/2, height/4 * 3 - 13);
-		board = loadImage("board.png");
+		board = loadImage("data" + File.separator + "board.png");
+		black = loadImage("data" + File.separator + "black.png");
+		white = loadImage("data" + File.separator + "white.png");
+		red = loadImage("data" + File.separator + "red.png");
 	}
 
 	public void draw() {
@@ -93,13 +100,23 @@ public class GameBoard extends PApplet {
 		
 		if(turnPhase==0) { //only striker is moving
 			striker.draw(this);
-			for(Piece p : pieces) {
-				p.draw(this);
+			for(GenericGamePiece p : pieces) {
+				if(p.getValue() == 10)
+					p.draw(this, black);
+				else if(p.getValue() == 20)
+					p.draw(this, white);
+				else
+					p.draw(this, red);
 			}
 		}else if(turnPhase==1) {
 			striker.draw(this);
-			for(Piece p : pieces) {
-				p.draw(this);
+			for(GenericGamePiece p : pieces) {
+				if(p.getValue() == 10)
+					p.draw(this, black);
+				else if(p.getValue() == 20)
+					p.draw(this, white);
+				else
+					p.draw(this, red);
 			}
 			double velX = striker.getX()-mouseX;
 			double velY = striker.getY()-mouseY;
@@ -125,14 +142,14 @@ public class GameBoard extends PApplet {
 			popStyle();
 		}else if(turnPhase==2) {
 			for(int i = 0; i < pieces.size(); i++) {
-				Piece p = pieces.get(i);
+				GenericGamePiece p = pieces.get(i);
 				striker.collide(p,this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
 			}
 			striker.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
 			striker.draw(this);
 			for(int i = 0; i < pieces.size(); i++) {
-				Piece p = pieces.get(i);
-				//p.draw(this);
+				GenericGamePiece p = pieces.get(i);
+				//p.draw(this, black);
 				int pScore = p.score(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH,4/3*PIECE_RADIUS);
 				if(pScore > 0) {
 					score+=pScore;
@@ -150,7 +167,7 @@ public class GameBoard extends PApplet {
 				striker.setVelX(0);
 				striker.setVelY(0);
 			}
-			ArrayList<Piece> stationaryPieces = new ArrayList<Piece>();
+			ArrayList<GenericGamePiece> stationaryPieces = new ArrayList<GenericGamePiece>();
 			for(int i = 0; i < pieces.size(); i++) {
 				if(!pieces.get(i).isMoving()) {
 					stationaryPieces.add(pieces.remove(i));
@@ -170,14 +187,19 @@ public class GameBoard extends PApplet {
 				pieces.add(stationaryPieces.remove(i));
 				i--;
 			}
-			for(Piece p : pieces) {
+			for(GenericGamePiece p : pieces) {
 				p.collide(striker, this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
 				p.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-				p.draw(this);
+				if(p.getValue() == 10)
+					p.draw(this, black);
+				else if(p.getValue() == 20)
+					p.draw(this, white);
+				else
+					p.draw(this, red);
 			}
 			
 			boolean stop = true;
-			for(Piece p : pieces) {
+			for(GenericGamePiece p : pieces) {
 				if(p.isMoving()) {
 					stop = false;
 				}
@@ -220,7 +242,7 @@ public class GameBoard extends PApplet {
 			turnPhase = 0;
 		}
 		if(keyCode==83) {
-			for(Piece p : pieces) {
+			for(GenericGamePiece p : pieces) {
 				p.setVelX(0);
 				p.setVelY(0);
 			}
