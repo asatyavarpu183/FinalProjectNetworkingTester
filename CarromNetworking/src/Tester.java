@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import networking.frontend.NetworkDataObject;
 import networking.frontend.NetworkListener;
@@ -247,7 +248,18 @@ public class Tester extends PApplet implements NetworkListener{
 					this.players  = (ArrayList<Player>) ndo.message[2];
 					this.playerTurn = (int) ndo.message[3];
 				}else if(ndo.message[0].equals(ADD_PLAYER)) {
-					players.add(new Player());
+					//players.add(new Player());
+					if(players.size()<4) {
+						if(players.size() == 1) {
+							players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 * 3 - 13 + striker.getRadius(),11 *this.width/25,2*striker.getRadius())));
+						}else if(players.size() == 2) {
+							
+						}else if(players.size() == 3)  {
+							
+						}
+					}else {
+						JOptionPane.showMessageDialog(null, "Sorry, server is full");
+					}
 				}
 			}else if(ndo.messageType.equals(NetworkDataObject.CLIENT_LIST)) {
 				nm.sendMessage(NetworkDataObject.MESSAGE, ADD_PLAYER);
