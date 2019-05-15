@@ -20,7 +20,7 @@ import processing.core.PImage;
  * @author Calix
  * @version 5/6/19
  */
-public class Tester extends PApplet implements NetworkListener{
+public class TesterNetworked extends PApplet implements NetworkListener{
 
 	private ArrayList<GenericGamePiece> pieces;
 	private ArrayList<Player> players;
@@ -41,7 +41,7 @@ public class Tester extends PApplet implements NetworkListener{
 
 	private NetworkMessenger nm;
 	
-	public Tester(int blacks, int whites) {
+	public TesterNetworked(int blacks, int whites) {
 		playerTurn = 0;
 		turnPhase = 0;
 		pieces = new ArrayList<GenericGamePiece>();
@@ -312,7 +312,7 @@ public class Tester extends PApplet implements NetworkListener{
 	}
 	
 	public static void main(String[] args) {
-		Tester board = new Tester(9, 9);
+		TesterNetworked board = new TesterNetworked(9, 9);
 		PApplet.runSketch(new String[]{"Carrom"}, board);
 		
 		PSurfaceAWT surf = (PSurfaceAWT) board.getSurface();
