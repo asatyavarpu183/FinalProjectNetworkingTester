@@ -11,11 +11,6 @@ import java.net.InetAddress;
  *
  *
  *
- *order of object rray
- *0 = type of message
- *1 = arraylist players
- *2 = turnphase for players
- *3 = pieces
  *
  */
 public class NetworkDataObject implements Serializable {

@@ -2,13 +2,16 @@ import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Queue;
 
 import javax.swing.JFrame;
 
+import networking.frontend.NetworkDataObject;
+import networking.frontend.NetworkListener;
+import networking.frontend.NetworkMessenger;
 import processing.awt.PSurfaceAWT;
 import processing.core.PApplet;
 import processing.core.PImage;
-import processing.event.MouseEvent;
 
 /**
  * PApplet for testing purposes
@@ -16,7 +19,7 @@ import processing.event.MouseEvent;
  * @author Calix
  * @version 5/6/19
  */
-public class Tester extends PApplet {
+public class Tester extends PApplet implements NetworkListener{
 
 	private ArrayList<GenericGamePiece> pieces;
 	private ArrayList<Player> players;
@@ -31,6 +34,11 @@ public class Tester extends PApplet {
 	public static final float GenericGamePiece_RADIUS = 14.5f;
 	public static final float BORDER_WIDTH = 28;
 	public static final float MOVEMENT_INCREMENT = 10;
+	
+	private static final String PLAYER_MOVE = "PLAYER_MOVE";
+	private static final String ADD_PLAYER = "ADD_PLAYER";
+
+	private NetworkMessenger nm;
 	
 	public Tester(int blacks, int whites) {
 		playerTurn = 0;
@@ -203,6 +211,7 @@ public class Tester extends PApplet {
 				striker.setLoc(player.getHitarea().getX()+player.getHitarea().getWidth()/2, player.getHitarea().getY()+player.getHitarea().getHeight()/2);
 				turnPhase = 0;
 				playerTurn = (playerTurn+1) % players.size();
+				nm.sendMessage(PLAYER_MOVE, pieces, players, playerTurn);
 			}
 		}
 		
@@ -212,8 +221,40 @@ public class Tester extends PApplet {
 		fill(0);
 		textAlign(CENTER,CENTER);
 		text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
+		
+		processNetworkMessages();
 	}
 	
+	public void connectedToServer(NetworkMessenger nm) {
+		this.nm = nm;
+	}
+	
+	public void processNetworkMessages() {
+		// TODO Auto-generated method stub
+		if (nm == null)
+			return;
+		
+		Queue<NetworkDataObject> queue = nm.getQueuedMessages();
+		
+		while (!queue.isEmpty()) {
+			NetworkDataObject ndo = queue.poll();
+
+			String host = ndo.getSourceIP();
+
+			if (ndo.messageType.equals(NetworkDataObject.MESSAGE)) {
+				if (ndo.message[0].equals(PLAYER_MOVE)) {
+					this.pieces = (ArrayList<GenericGamePiece>) ndo.message[1];
+					this.players  = (ArrayList<Player>) ndo.message[2];
+					this.playerTurn = (int) ndo.message[3];
+				}else if(ndo.message[0].equals(ADD_PLAYER)) {
+					players.add(new Player());
+				}
+			}else if(ndo.messageType.equals(NetworkDataObject.CLIENT_LIST)) {
+				nm.sendMessage(NetworkDataObject.MESSAGE, ADD_PLAYER);
+			}
+		}
+	}
+
 	public void mouseDragged() {
 		//striker.setLoc(mouseX, mouseY);
 	}
@@ -276,5 +317,11 @@ public class Tester extends PApplet {
 		//make window visible
 		window.setVisible(true);
 		canvas.requestFocus();
+	}
+
+	@Override
+	public void networkMessageReceived(NetworkDataObject ndo) {
+		// TODO Auto-generated method stub
+		
 	}
 }
