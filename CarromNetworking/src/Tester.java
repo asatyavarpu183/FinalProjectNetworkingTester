@@ -31,7 +31,7 @@ public class Tester extends PApplet implements NetworkListener{
 	private PImage white;
 	private int turnPhase;
 	private int playerTurn;
-
+	private String serverHost = "server";
 	public static final float GenericGamePiece_RADIUS = 14.5f;
 	public static final float BORDER_WIDTH = 28;
 	public static final float MOVEMENT_INCREMENT = 10;
@@ -94,8 +94,7 @@ public class Tester extends PApplet implements NetworkListener{
 		pieces.get(18).setLoc(x - GenericGamePiece_RADIUS * Math.sin(Math.PI/3) * 4, y + GenericGamePiece_RADIUS * Math.cos(Math.PI/3) * 4);	
 		
 		striker.setLoc(width/2, height/4 * 3 - 13);
-		players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 + 13 - striker.getRadius(),11*this.width/25,2*striker.getRadius())));
-		players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 * 3 - 13 + striker.getRadius(),11 *this.width/25,2*striker.getRadius())));
+		players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 + 13 - striker.getRadius(),11*this.width/25,2*striker.getRadius()), serverHost));
 		board = loadImage("data" + File.separator + "board.png");
 		black = loadImage("data" + File.separator + "black.png");
 		white = loadImage("data" + File.separator + "white.png");
@@ -251,7 +250,7 @@ public class Tester extends PApplet implements NetworkListener{
 					//players.add(new Player());
 					if(players.size()<4) {
 						if(players.size() == 1) {
-							players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 * 3 - 13 + striker.getRadius(),11 *this.width/25,2*striker.getRadius())));
+							players.add(new Player(striker,new Rectangle2D.Double(3*this.width/10-striker.getRadius(),height/4 * 3 - 13 + striker.getRadius(),11 *this.width/25,2*striker.getRadius()), host));
 						}else if(players.size() == 2) {
 							
 						}else if(players.size() == 3)  {

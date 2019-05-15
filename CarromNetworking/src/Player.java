@@ -13,13 +13,16 @@ public class Player {
 	private Striker striker;
 	private Rectangle2D.Double hitarea;
 	private ArrayList<GenericGamePiece> myPieces;
+	public String host;
 	
-	public Player(Striker striker, Double hitarea) {
+	public Player(Striker striker, Double hitarea, String host) {
 		super();
+		this.host = host;
 		this.striker = striker;
 		this.hitarea = hitarea;
 		this.myPieces = new ArrayList<GenericGamePiece>();
 	}
+	
 	public Striker getStriker() {
 		return striker;
 	}
