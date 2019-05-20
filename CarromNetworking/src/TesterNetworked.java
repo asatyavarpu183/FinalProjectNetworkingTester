@@ -103,8 +103,8 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 	}
 
 	public void draw() {
-		if(players.size()>1) {
-			
+		//if(players.size()>1) {
+			System.out.println("kjsd;jkjk;sda");
 		
 			Player player = players.get(playerTurn);
 			background(255);	
@@ -224,10 +224,10 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 			textSize(30);
 			fill(0);
 			textAlign(CENTER,CENTER);
-			text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
+			//text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
 			
 			processNetworkMessages();
-		}
+		//}
 		
 	}
 	
@@ -334,7 +334,7 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 		PSurfaceAWT.SmoothCanvas canvas = (PSurfaceAWT.SmoothCanvas) surf.getNative();
 		JFrame window = (JFrame)canvas.getFrame();
 
-		window.setSize(800, 600);
+		window.setSize(1000, 1000);
 		window.setMinimumSize(new Dimension(100,100));
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(true);
