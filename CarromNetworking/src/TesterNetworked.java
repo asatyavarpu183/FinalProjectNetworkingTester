@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import networking.frontend.NetworkDataObject;
 import networking.frontend.NetworkListener;
+import networking.frontend.NetworkManagementPanel;
 import networking.frontend.NetworkMessenger;
 import processing.awt.PSurfaceAWT;
 import processing.core.PApplet;
@@ -102,127 +103,132 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 	}
 
 	public void draw() {
-		Player player = players.get(playerTurn);
-		background(255);	
-		imageMode(CENTER);
-		image(board, width/2, height/2, width * 0.75f, height * 0.75f);
+		if(players.size()>1) {
+			
 		
-		if(turnPhase==0) {
-			player.draw(this);
-			for(GenericGamePiece p : pieces) {
-				if(p.getValue() == 10)
-					p.draw(this, black);
-				else if(p.getValue() == 20)
-					p.draw(this, white);
-				else
-					p.draw(this, red);
-			}
-		}else if(turnPhase==1) {
-			players.get(0).draw(this);
-			for(GenericGamePiece p : pieces) {
-				if(p.getValue() == 10)
-					p.draw(this, black);
-				else if(p.getValue() == 20)
-					p.draw(this, white);
-				else
-					p.draw(this, red);
-			}
-			double velX = striker.getX()-mouseX;
-			double velY = striker.getY()-mouseY;
-			if(Math.pow(velX, 2)+Math.pow(velY, 2) > 9*width/10) {
-				velX *= 3*width/100/Math.sqrt(Math.pow(velX, 2)+Math.pow(velY, 2));
-				velY *= 3*width/100/Math.sqrt(Math.pow(velX, 2)+Math.pow(velY, 2));
-			}
-				
-			striker.setVelX(velX);
-			striker.setVelY(velY);
-			pushStyle();
-			strokeWeight(4);
-			stroke(255);
-			line((float)striker.getX(),(float)striker.getY(),(float)(striker.getX()+2*velX),(float)(striker.getY()+2*velY));
-			popStyle();
-		}else if(turnPhase==2) {
-			for(int i = 0; i < pieces.size(); i++) {
-				GenericGamePiece p = pieces.get(i);
-				striker.collide(p,this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-			}
-			striker.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-			striker.draw(this);
-			for(int i = 0; i < pieces.size(); i++) {
-				GenericGamePiece p = pieces.get(i);
-				//p.draw(this);
-				int pScore = p.score(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH,4/3*GenericGamePiece_RADIUS);
-				if(pScore > 0) {
-					player.addCoin(p);
-					pieces.remove(p);
-					i--;		
-				}
-			}
-			int sScore = striker.score(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH,4/3*GenericGamePiece_RADIUS);
-			if(sScore==-1) {
+			Player player = players.get(playerTurn);
+			background(255);	
+			imageMode(CENTER);
+			image(board, width/2, height/2, width * 0.75f, height * 0.75f);
+			
+			if(turnPhase==0) {
+				player.draw(this);
 				for(GenericGamePiece p : pieces) {
-					p.setVelX(0);
-					p.setVelY(0);
+					if(p.getValue() == 10)
+						p.draw(this, black);
+					else if(p.getValue() == 20)
+						p.draw(this, white);
+					else
+						p.draw(this, red);
 				}
-				striker.setVelX(0);
-				striker.setVelY(0);
-			}
-			ArrayList<GenericGamePiece> stationarypieces = new ArrayList<GenericGamePiece>();
-			for(int i = 0; i < pieces.size(); i++) {
-				if(!pieces.get(i).isMoving()) {
-					stationarypieces.add(pieces.remove(i));
+			}else if(turnPhase==1) {
+				players.get(0).draw(this);
+				for(GenericGamePiece p : pieces) {
+					if(p.getValue() == 10)
+						p.draw(this, black);
+					else if(p.getValue() == 20)
+						p.draw(this, white);
+					else
+						p.draw(this, red);
+				}
+				double velX = striker.getX()-mouseX;
+				double velY = striker.getY()-mouseY;
+				if(Math.pow(velX, 2)+Math.pow(velY, 2) > 9*width/10) {
+					velX *= 3*width/100/Math.sqrt(Math.pow(velX, 2)+Math.pow(velY, 2));
+					velY *= 3*width/100/Math.sqrt(Math.pow(velX, 2)+Math.pow(velY, 2));
+				}
+					
+				striker.setVelX(velX);
+				striker.setVelY(velY);
+				pushStyle();
+				strokeWeight(4);
+				stroke(255);
+				line((float)striker.getX(),(float)striker.getY(),(float)(striker.getX()+2*velX),(float)(striker.getY()+2*velY));
+				popStyle();
+			}else if(turnPhase==2) {
+				for(int i = 0; i < pieces.size(); i++) {
+					GenericGamePiece p = pieces.get(i);
+					striker.collide(p,this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+				}
+				striker.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+				striker.draw(this);
+				for(int i = 0; i < pieces.size(); i++) {
+					GenericGamePiece p = pieces.get(i);
+					//p.draw(this);
+					int pScore = p.score(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH,4/3*GenericGamePiece_RADIUS);
+					if(pScore > 0) {
+						player.addCoin(p);
+						pieces.remove(p);
+						i--;		
+					}
+				}
+				int sScore = striker.score(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH,4/3*GenericGamePiece_RADIUS);
+				if(sScore==-1) {
+					for(GenericGamePiece p : pieces) {
+						p.setVelX(0);
+						p.setVelY(0);
+					}
+					striker.setVelX(0);
+					striker.setVelY(0);
+				}
+				ArrayList<GenericGamePiece> stationarypieces = new ArrayList<GenericGamePiece>();
+				for(int i = 0; i < pieces.size(); i++) {
+					if(!pieces.get(i).isMoving()) {
+						stationarypieces.add(pieces.remove(i));
+						i--;
+					}
+				}
+				//collision check
+				for(int i = 0; i < pieces.size();i++) {
+					for(int j = i+1; j < pieces.size(); j++) {
+						pieces.get(i).collide(pieces.get(j), this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+					}
+					for(int k = 0; k < stationarypieces.size();k++) {
+						pieces.get(i).collide(stationarypieces.get(k), this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+					}
+				}
+				for(int i = 0; i < stationarypieces.size();i++) {
+					pieces.add(stationarypieces.remove(i));
 					i--;
 				}
-			}
-			//collision check
-			for(int i = 0; i < pieces.size();i++) {
-				for(int j = i+1; j < pieces.size(); j++) {
-					pieces.get(i).collide(pieces.get(j), this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+				for(GenericGamePiece p : pieces) {
+					p.collide(striker, this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+					p.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+					if(p.getValue() == 10)
+						p.draw(this, black);
+					else if(p.getValue() == 20)
+						p.draw(this, white);
+					else
+						p.draw(this, red);
 				}
-				for(int k = 0; k < stationarypieces.size();k++) {
-					pieces.get(i).collide(stationarypieces.get(k), this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+				
+				boolean stop = true;
+				for(GenericGamePiece p : pieces) {
+					if(p.isMoving()) {
+						stop = false;
+					}
 				}
-			}
-			for(int i = 0; i < stationarypieces.size();i++) {
-				pieces.add(stationarypieces.remove(i));
-				i--;
-			}
-			for(GenericGamePiece p : pieces) {
-				p.collide(striker, this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-				p.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-				if(p.getValue() == 10)
-					p.draw(this, black);
-				else if(p.getValue() == 20)
-					p.draw(this, white);
-				else
-					p.draw(this, red);
-			}
-			
-			boolean stop = true;
-			for(GenericGamePiece p : pieces) {
-				if(p.isMoving()) {
+				if(striker.isMoving()) {
 					stop = false;
 				}
+				if(stop) {
+					striker.setLoc(player.getHitarea().getX()+player.getHitarea().getWidth()/2, player.getHitarea().getY()+player.getHitarea().getHeight()/2);
+					turnPhase = 0;
+					playerTurn = (playerTurn+1) % players.size();
+					nm.sendMessage(PLAYER_MOVE, pieces, players, playerTurn);
+				}
 			}
-			if(striker.isMoving()) {
-				stop = false;
-			}
-			if(stop) {
-				striker.setLoc(player.getHitarea().getX()+player.getHitarea().getWidth()/2, player.getHitarea().getY()+player.getHitarea().getHeight()/2);
-				turnPhase = 0;
-				playerTurn = (playerTurn+1) % players.size();
-				nm.sendMessage(PLAYER_MOVE, pieces, players, playerTurn);
-			}
+			
+			//testGenericGamePiece.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
+			//testGenericGamePiece.draw(this);
+			textSize(30);
+			fill(0);
+			textAlign(CENTER,CENTER);
+			text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
+			
+			processNetworkMessages();
 		}
 		
-		//testGenericGamePiece.move(this.width/8+BORDER_WIDTH,this.height/8+BORDER_WIDTH,7*this.width/8-BORDER_WIDTH,7*this.height/8-BORDER_WIDTH);
-		//testGenericGamePiece.draw(this);
-		textSize(30);
-		fill(0);
-		textAlign(CENTER,CENTER);
-		text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
-		
-		processNetworkMessages();
 	}
 	
 	public void connectedToServer(NetworkMessenger nm) {
@@ -262,6 +268,16 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 				}
 			}else if(ndo.messageType.equals(NetworkDataObject.CLIENT_LIST)) {
 				nm.sendMessage(NetworkDataObject.MESSAGE, ADD_PLAYER);
+			}else if(ndo.messageType.equals(NetworkDataObject.DISCONNECT)) {
+				if(ndo.dataSource.equals(ndo.serverHost)) {
+					System.exit(0);
+				}else {
+					for(int i = 0;i<players.size();i++) {
+						if(players.get(i).host.equals(ndo.getSourceIP())) {
+							players.remove(i);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -312,22 +328,20 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 	}
 	
 	public static void main(String[] args) {
-		TesterNetworked board = new TesterNetworked(9, 9);
-		PApplet.runSketch(new String[]{"Carrom"}, board);
-		
-		PSurfaceAWT surf = (PSurfaceAWT) board.getSurface();
+		TesterNetworked drawing = new TesterNetworked(9,9);
+		PApplet.runSketch(new String[]{""}, drawing);
+		PSurfaceAWT surf = (PSurfaceAWT) drawing.getSurface();
 		PSurfaceAWT.SmoothCanvas canvas = (PSurfaceAWT.SmoothCanvas) surf.getNative();
 		JFrame window = (JFrame)canvas.getFrame();
-		
-		//window is 1000x1000 permanently
-		window.setSize(1000,1000);
-		window.setMinimumSize(new Dimension(1000,1000));
+
+		window.setSize(800, 600);
+		window.setMinimumSize(new Dimension(100,100));
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);//a stretch is to change this
-		
-		//make window visible
+		window.setResizable(true);
+
 		window.setVisible(true);
-		canvas.requestFocus();
+		
+		NetworkManagementPanel nmp = new NetworkManagementPanel("ProcessingDrawing", 6, drawing);
 	}
 
 	@Override
