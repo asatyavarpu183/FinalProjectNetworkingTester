@@ -104,7 +104,9 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 
 	public void draw() {
 		//if(players.size()>1) {
-		
+			if(players.size()>1) {
+				System.out.println("akshat is gay");
+			}
 			Player player = players.get(playerTurn);
 			background(255);	
 			imageMode(CENTER);
@@ -214,7 +216,7 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 					striker.setLoc(player.getHitarea().getX()+player.getHitarea().getWidth()/2, player.getHitarea().getY()+player.getHitarea().getHeight()/2);
 					turnPhase = 0;
 					playerTurn = (playerTurn+1) % players.size();
-					nm.sendMessage(PLAYER_MOVE, pieces, players, playerTurn);
+					nm.sendMessage(NetworkDataObject.MESSAGE,PLAYER_MOVE, pieces, players, playerTurn);
 				}
 			}
 			
