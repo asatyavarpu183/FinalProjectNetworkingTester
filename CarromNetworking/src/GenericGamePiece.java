@@ -1,13 +1,16 @@
-import processing.core.PApplet;
+import java.io.Serializable;
 
 /**Superclass for all types of game pieces.
  * 
  * @author calix
  *
  */
-public class GenericGamePiece extends Piece{
+public class GenericGamePiece extends Piece implements Serializable{
 	
 	private int value;
+	
+	private static final long serialVersionUID = 2L;
+
 	/**Instantiates a GenericGamePiece with default color (black)
 	 * 
 	 * @param x the initial x position
