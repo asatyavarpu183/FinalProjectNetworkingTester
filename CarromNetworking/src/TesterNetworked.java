@@ -214,7 +214,6 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 					striker.setLoc(player.getHitarea().getX()+player.getHitarea().getWidth()/2, player.getHitarea().getY()+player.getHitarea().getHeight()/2);
 					turnPhase = 0;
 					playerTurn = (playerTurn+1) % players.size();
-					nm.sendMessage(NetworkDataObject.MESSAGE,PLAYER_MOVE, pieces, players, playerTurn, striker);
 				}
 			}
 			
@@ -224,7 +223,7 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 			fill(0);
 			textAlign(CENTER,CENTER);
 			//text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
-			
+			nm.sendMessage(NetworkDataObject.MESSAGE,PLAYER_MOVE, pieces, players, playerTurn, striker);
 			processNetworkMessages();
 		//}
 		
