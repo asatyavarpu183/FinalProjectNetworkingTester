@@ -1,5 +1,6 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
@@ -9,11 +10,13 @@ import processing.core.PApplet;
  * @author Akshat
  *
  */
-public class Player {
+public class Player implements Serializable{
 	private Striker striker;
 	private Rectangle2D.Double hitarea;
 	private ArrayList<GenericGamePiece> myPieces;
 	public String host;
+	
+	private static final long serialVersionUID = 1L;
 	
 	public Player(Striker striker, Double hitarea, String host) {
 		super();
