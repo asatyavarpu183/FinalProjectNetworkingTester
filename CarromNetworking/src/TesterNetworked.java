@@ -223,7 +223,12 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 			fill(0);
 			textAlign(CENTER,CENTER);
 			//text("Player 1 score: " + players.get(0).getScore() + "                      Player 2 score: " + players.get(1).getScore(),width/2,height/10);
-			nm.sendMessage(NetworkDataObject.MESSAGE,PLAYER_MOVE, pieces, players, playerTurn, striker);
+			try {
+				nm.sendMessage(NetworkDataObject.MESSAGE,PLAYER_MOVE, pieces, players, playerTurn, striker);
+
+			}catch(NullPointerException e) {
+				
+			}
 			processNetworkMessages();
 		//}
 		
