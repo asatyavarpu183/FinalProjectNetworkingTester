@@ -104,7 +104,8 @@ public class TesterNetworked extends PApplet implements NetworkListener{
 
 	public void draw() {
 		//if(players.size()>1) {
-			
+		fill(0);
+			text(playerTurn, 30,30);
 			Player player = players.get(playerTurn);
 			background(255);	
 			imageMode(CENTER);
